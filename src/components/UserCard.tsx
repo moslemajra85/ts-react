@@ -14,6 +14,8 @@ type UserShape = {
 type Props = UserShape | { user: UserShape };
 
 const UserCard = (props: Props) => {
+
+  // this is just a temporary solution we will make it better later
   // Normalize props so component accepts either:
   // <UserCard {...user} />  OR  <UserCard user={user} />
   const user: UserShape = "user" in props ? props.user : (props as UserShape);
