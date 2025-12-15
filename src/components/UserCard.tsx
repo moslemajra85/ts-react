@@ -1,25 +1,27 @@
 import { formatWebsite, getInitials } from "../utils/helper";
 
-interface UserProps {
+type UserShape = {
   id: number;
-  name: string;
+  name?: string;
   username?: string;
   email?: string;
   website?: string;
   company?: {
-    name: string;
+    name?: string;
   };
-}
+};
 
-const UserCard = ({id, name, username, email, website, company}: UserProps) => {
+type Props = UserShape | { user: UserShape };
+
+const UserCard = (props: Props) => {
+  // Normalize props so component accepts either:
+  // <UserCard {...user} />  OR  <UserCard user={user} />
+  const user: UserShape = "user" in props ? props.user : (props as UserShape);
+  const { id, name = "", username = "", email = "", website, company } = user;
   const mywebsite = formatWebsite(website);
 
   return (
-    <article
-      key={id}
-      className="user-card"
-      aria-label={`User ${name}`}
-    >
+    <article className="user-card" aria-label={`User ${name}`}>
       <button className="delete-btn" type="button">
         Delete
       </button>

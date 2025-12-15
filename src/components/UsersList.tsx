@@ -41,9 +41,7 @@ const UsersList = () => {
       </header>
       <div className="users-grid">
         {users.map((user) => {
-           return (
-           <UserCard key={user.id} user={user}/>
-          );
+          return <UserCard key={user.id} {...user} />;
         })}
       </div>
     </section>
