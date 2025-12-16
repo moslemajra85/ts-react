@@ -1,34 +1,41 @@
 import { useEffect, useState } from "react";
 import UserCard from "./UserCard";
-import axios from "axios";
+import { ClipLoader } from "react-spinners";
+import ErrorMessage from "./ErrorMessage";
+import type { User } from "../services/usersService";
+import userService from "../services/usersService";
 
-export interface User {
-  id: number;
-  name: string;
-  username?: string;
-  email?: string;
-  website?: string;
-  company?: {
-    name: string;
-  };
-}
 
 const UsersList = () => {
   const [users, setUsers] = useState<User[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const getUsers = async () => {
     try {
-      const response = await axios.get(
-        "https://jsonplaceholder.typicode.com/users"
-      );
+      setLoading(true);
+      const response = await userService.getAllUser()
       setUsers(response.data);
     } catch (error) {
+      setError("Something Went Wrong While Fetching Users!");
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
     getUsers();
   }, []);
+
+  if (loading) {
+    return <ClipLoader color="blue" />;
+  }
+
+  if (error) {
+    return <div className="error-container">
+      <ErrorMessage>{error}</ErrorMessage>
+    </div>;
+  }
 
   return (
     <section className="users-container">
@@ -41,7 +48,7 @@ const UsersList = () => {
       </header>
       <div className="users-grid">
         {users.map((user) => {
-          return <UserCard key={user.id} {...user} />;
+          return <UserCard key={user.id} user={user} />;
         })}
       </div>
     </section>

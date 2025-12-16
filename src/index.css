@@ -246,4 +246,19 @@ body {
     padding: 0.9rem;
   }
 }
- 
+
+/* Style  The ErrorMessage Component */
+
+.error-msg {
+  padding: 5px;
+  border-radius: 5px;
+  background-color: red;
+  font-size: 18px;
+  font-weight: boler;
+  color: #fff;
+}
+
+.error-container {
+  max-width: 80%;
+  margin: 20px auto;
+}

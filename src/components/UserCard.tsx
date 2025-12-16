@@ -1,58 +1,52 @@
 import { formatWebsite, getInitials } from "../utils/helper";
+import type { User } from "./UsersList";
+import userService from "../services/usersService";
 
-type UserShape = {
-  id: number;
-  name?: string;
-  username?: string;
-  email?: string;
-  website?: string;
-  company?: {
-    name?: string;
+interface UserShape {
+  user: User;
+}
+
+const UserCard = ({ user }: UserShape) => {
+  const website = formatWebsite(user.website);
+
+  const handleDelete = (id: number) => {
+    userService.deleteUser(id);
   };
-};
-
-type Props = UserShape | { user: UserShape };
-
-const UserCard = (props: Props) => {
-
-  // this is just a temporary solution we will make it better later
-  // Normalize props so component accepts either:
-  // <UserCard {...user} />  OR  <UserCard user={user} />
-  const user: UserShape = "user" in props ? props.user : (props as UserShape);
-  const { id, name = "", username = "", email = "", website, company } = user;
-  const mywebsite = formatWebsite(website);
-
   return (
-    <article className="user-card" aria-label={`User ${name}`}>
-      <button className="delete-btn" type="button">
+    <article className="user-card" aria-label={`User ${user.name}`}>
+      <button
+        onClick={() => handleDelete(user.id)}
+        className="delete-btn"
+        type="button"
+      >
         Delete
       </button>
       <div className="card-header">
         <div className="avatar" aria-hidden="true">
-          {getInitials(name)}
+          {getInitials(user.name)}
         </div>
         <div className="user-info">
-          <h3 className="name">{name}</h3>
-          <p className="username">@{username}</p>
+          <h3 className="name">{user.name}</h3>
+          <p className="username">@{user.username}</p>
         </div>
       </div>
       <div className="card-body">
         <div className="info-row">
           <span className="label">Email</span>
-          <a className="email" href={`mailto:${email}`}>
-            {email}
+          <a className="email" href={`mailto:${user.email}`}>
+            {user.email}
           </a>
         </div>
         <div className="info-row">
           <span className="label">Website</span>
-          {mywebsite ? (
+          {website ? (
             <a
               className="website"
               href={`https://${website}`}
               target="_blank"
               rel="noreferrer"
             >
-              {website}
+              {user.website}
             </a>
           ) : (
             <span className="muted-value">No site listed</span>
@@ -60,11 +54,11 @@ const UserCard = (props: Props) => {
         </div>
         <div className="info-row">
           <span className="label">Company</span>
-          <span className="value">{company?.name ?? "Independent"}</span>
+          <span className="value">{user.company?.name ?? "Independent"}</span>
         </div>
         <div className="chip-row" aria-hidden="true">
-          <span className="chip">ID {id}</span>
-          <span className="chip alt">@{username}</span>
+          <span className="chip">ID {user.id}</span>
+          <span className="chip alt">@{user.username}</span>
         </div>
       </div>
     </article>
