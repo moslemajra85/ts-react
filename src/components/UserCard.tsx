@@ -4,13 +4,25 @@ import userService from "../services/usersService";
 
 interface UserShape {
   user: User;
+  onDelete: (id: number) => void;
+  originalUsers: User[];
+  rollBack: (users: User[]) => void;
 }
 
-const UserCard = ({ user }: UserShape) => {
+const UserCard = ({ user, onDelete, originalUsers, rollBack }: UserShape) => {
   const website = formatWebsite(user.website);
-
-  const handleDelete = (id: number) => {
-    userService.deleteUser(id);
+   const oldUsers = originalUsers;
+  const handleDelete = async (id: number) => {
+    try {
+      //update tbe User interface
+      onDelete(user.id);
+      // update the server
+      const result = await userService.deleteUser(id);
+      console.log(result);
+    } catch (error) {
+      // we need to reset the users state to the original users
+      rollBack(oldUsers);
+    }
   };
   return (
     <article className="user-card" aria-label={`User ${user.name}`}>

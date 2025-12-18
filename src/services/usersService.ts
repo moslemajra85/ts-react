@@ -1,7 +1,7 @@
 import { HTTP_CLIENT } from "./httpClient";
 
 export interface User {
-  id: number;
+  id?: number;
   name: string;
   username?: string;
   email?: string;
@@ -15,6 +15,11 @@ class UserService {
     return HTTP_CLIENT.get<User[]>("/users");
   }
 
+
+  addUser(user: User) {
+    return HTTP_CLIENT.post("/users",user)
+  }
+  
   deleteUser(id: number) {
     return HTTP_CLIENT.delete(`/users/${id}`);
   }
